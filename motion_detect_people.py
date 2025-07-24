@@ -61,7 +61,7 @@ def process_video(video_path):
     # --- Rich UI Setup ---
     progress = Progress(
         TextColumn(" "),
-        BarColumn(bar_width=30, style="blue", complete_style="magenta"),
+        BarColumn(bar_width=30, style="cyan", complete_style="magenta"),
         TextColumn("[progress.percentage]{task.percentage:>3.0f}%"),
         TimeRemainingColumn(),
     )
