@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Detects people and vehicles in a video file, logging each detection to a file.
+Detects people, vehicles, and animals in a video file, logging each detection.
 Displays a rich progress UI in the terminal.
 
 Usage:
@@ -49,9 +49,14 @@ def process_video(video_path):
     total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
     fps = cap.get(cv2.CAP_PROP_FPS)
 
+    # NEW: Initialize counters for all three categories
     total_persons_found = 0
     total_vehicles_found = 0
-    vehicle_ids = [2, 3, 5, 7]
+    total_animals_found = 0
+
+    # Define class IDs for each category
+    vehicle_ids = [1, 2, 3, 5, 7] # bicycle, car, motorcycle, bus, truck
+    animal_ids = [14, 15, 16, 17, 18, 19, 20, 21, 22, 23] # All 10 animal classes
 
     # --- Rich UI Setup ---
     progress = Progress(
@@ -60,13 +65,17 @@ def process_video(video_path):
         TextColumn("[progress.percentage]{task.percentage:>3.0f}%"),
         TimeRemainingColumn(),
     )
-    
+
     detection_task = progress.add_task("Processing...", total=total_frames)
 
     def generate_layout() -> Panel:
-        persons_text = Text(f"✓ Persons: {total_persons_found}", style="green")
+        # NEW: Create text displays for all three counters
+        persons_text = Text(f"✓ Persons: {total_persons_found}", style="cyan")
         vehicles_text = Text(f"✓ Vehicles: {total_vehicles_found}", style="cyan")
-        ui_group = Group(persons_text, vehicles_text, progress)
+        animals_text = Text(f"✓ Animals: {total_animals_found}", style="cyan")
+
+        # Group all UI elements together
+        ui_group = Group(persons_text, vehicles_text, animals_text, progress)
         return Panel(ui_group, title="[bold]Detection Status[/bold]", border_style="dim")
 
     # --- Main Processing Loop ---
@@ -82,19 +91,21 @@ def process_video(video_path):
                 for box in r.boxes:
                     cls_id = int(box.cls[0])
                     confidence = float(box.conf[0])
-                    
+
                     if confidence > 0.5:
-                        # THIS IS THE CORRECTED LINE:
                         current_seconds = progress.tasks[detection_task].completed / fps
                         video_timestamp = str(datetime.timedelta(seconds=int(current_seconds)))
                         class_name = model.names.get(cls_id, "Unknown")
                         log_message = f"[{video_timestamp}] Detected '{class_name}' (Confidence: {confidence:.2f})"
                         logging.info(log_message)
 
+                        # NEW: Check for person, vehicle, or animal and increment correct counter
                         if cls_id == 0:
                             total_persons_found += 1
                         elif cls_id in vehicle_ids:
                             total_vehicles_found += 1
+                        elif cls_id in animal_ids:
+                            total_animals_found += 1
 
             progress.update(detection_task, advance=1)
             live.update(generate_layout())
@@ -102,8 +113,9 @@ def process_video(video_path):
     # --- Cleanup ---
     cap.release()
     cv2.destroyAllWindows()
-    
-    print(f"\n[SUMMARY] Found a total of {total_persons_found} persons and {total_vehicles_found} vehicles.")
+
+    # NEW: Update the final summary to include all three counts
+    print(f"\n[SUMMARY] Found a total of {total_persons_found} persons, {total_vehicles_found} vehicles, and {total_animals_found} animals.")
     print("[INFO] Processing complete.")
 
 
