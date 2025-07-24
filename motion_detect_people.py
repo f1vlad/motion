@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Detects people in a video file using the YOLOv8 model.
+Detects people in a video file using the YOLOv8 model and displays a progress bar.
 
 Usage:
     python motion_detect_people.py <path_to_video_file>
@@ -11,10 +11,11 @@ import os
 import cv2
 from ultralytics import YOLO
 from ultralytics.utils import LOGGER
+from tqdm import tqdm
 
 def process_video(video_path):
     """
-    Processes a video to detect people, displaying the output and printing detections.
+    Processes a video to detect people, displaying the output with a progress bar.
     """
     # --- File Validation ---
     if not os.path.isfile(video_path):
@@ -36,64 +37,47 @@ def process_video(video_path):
         print(f"[ERROR] Failed to open video: {video_path}")
         sys.exit(1)
 
-    # Get video properties
-    fps = cap.get(cv2.CAP_PROP_FPS)
+    # Get video properties for the progress bar
     total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
-    duration = total_frames / fps if fps > 0 else 0
-
     print(f"[INFO] Video loaded: {os.path.basename(video_path)}")
-    print(f"[INFO] FPS: {fps:.1f}, Total Frames: {total_frames}, Duration: {duration:.2f} sec")
 
-    frame_idx = 0
+    # --- Main Processing Loop with tqdm Progress Bar ---
+    with tqdm(total=total_frames, unit="frame", desc="[INFO] Processing") as pbar:
+        while cap.isOpened():
+            ret, frame = cap.read()
+            if not ret:
+                break  # End of video
 
-    # --- Main Processing Loop ---
-    while cap.isOpened():
-        ret, frame = cap.read()
-        if not ret:
-            break # End of video
+            # Run YOLOv8 inference on the frame
+            results = model(frame)
 
-        # Run YOLOv8 inference on the frame
-        results = model(frame)
-        person_detected_in_frame = False
-        highest_confidence = 0.0
+            # Process detection results
+            for r in results:
+                for box in r.boxes:
+                    # Check if the detected object is a person (class ID 0)
+                    if int(box.cls[0]) == 0:
+                        confidence = float(box.conf[0])
+                        # Set a confidence threshold
+                        if confidence > 0.5:
+                            # Use tqdm.write() to print messages without disturbing the bar
+                            tqdm.write(f"[DETECTED] Person @ frame {int(pbar.n)}, confidence: {confidence:.2f}")
 
-        # Process results
-        for r in results:
-            for box in r.boxes:
-                # Check if the detected object is a person (class ID 0)
-                if int(box.cls[0]) == 0:
-                    confidence = float(box.conf[0])
-                    # Set a confidence threshold
-                    if confidence > 0.5:
-                        person_detected_in_frame = True
-                        if confidence > highest_confidence:
-                            highest_confidence = confidence
+                            # Get bounding box coordinates and draw on the frame
+                            x1, y1, x2, y2 = map(int, box.xyxy[0])
+                            cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
+                            label = f'Person {confidence:.2f}'
+                            # This is the corrected line
+                            cv2.putText(frame, label, (x1, y1 - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
 
-                        # Get bounding box coordinates and draw on the frame
-                        x1, y1, x2, y2 = map(int, box.xyxy[0])
-                        cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
-                        label = f'Person {confidence:.2f}'
-                        cv2.putText(frame, label, (x1, y1 - 10),
-                                    cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
-                        print(f"\n[DETECTED] Person @ frame {frame_idx}, confidence: {confidence:.2f}")
+            # --- Show Detection Window ---
+            cv2.imshow('People Detection', frame)
+            # Allow exit with ESC key
+            if cv2.waitKey(1) & 0xFF == 27:
+                tqdm.write("\n[INFO] Exiting on user request.")
+                break
 
-        # --- Live Terminal Status (single line) ---
-        progress_percent = (frame_idx / total_frames) * 100 if total_frames > 0 else 0
-        status_text = (
-            f"\r[PROCESSING] Frame {frame_idx}/{total_frames} ({progress_percent:.1f}%) | "
-            f"Person Detected: {person_detected_in_frame} | "
-            f"Confidence: {highest_confidence:.2f}   "
-        )
-        print(status_text, end="", flush=True)
-
-        # --- Show Detection Window ---
-        cv2.imshow('People Detection', frame)
-        # Allow exit with ESC key
-        if cv2.waitKey(1) & 0xFF == 27:
-            print("\n[INFO] Exiting on user request.")
-            break
-
-        frame_idx += 1
+            # Update the progress bar by one frame
+            pbar.update(1)
 
     # --- Cleanup ---
     cap.release()
@@ -101,11 +85,13 @@ def process_video(video_path):
     print("\n[INFO] Processing complete.")
 
 
+# This block ensures the script runs when called from the command line
 if __name__ == "__main__":
-    # --- Command-line argument parsing ---
+    # Check for the video file argument
     if len(sys.argv) != 2:
         print(f"Usage: python {os.path.basename(__file__)} <video_file>")
         sys.exit(1)
 
+    # Get the video path and start processing
     input_video_path = sys.argv[1]
     process_video(input_video_path)
