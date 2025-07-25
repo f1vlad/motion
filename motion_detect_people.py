@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """
-Detects people, vehicles, and animals in a video file, logging each detection.
+Detects people, vehicles, and animals in a video file, logging each detection
+and saving an annotated video with bounding boxes.
 Displays a rich progress UI in the terminal.
 
 Usage:
@@ -46,6 +47,16 @@ def process_video(video_path):
         print(f"[ERROR] Failed to open video: {video_path}")
         sys.exit(1)
 
+    # --- Video Writer Setup ---
+    output_video_path = f"{os.path.splitext(video_path)[0]}_annotated.mp4"
+    fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+    out_fps = cap.get(cv2.CAP_PROP_FPS)
+    width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+    height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+    out = cv2.VideoWriter(output_video_path, fourcc, out_fps, (width, height))
+    print(f"[INFO] Annotated video will be saved to: {output_video_path}")
+    # --- End Video Writer Setup ---
+
     total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
     fps = cap.get(cv2.CAP_PROP_FPS)
 
@@ -87,6 +98,12 @@ def process_video(video_path):
 
             results = model(frame)
 
+            # Draw bounding boxes on the frame
+            annotated_frame = results[0].plot()
+
+            # Write the annotated frame to the output video
+            out.write(annotated_frame)
+
             for r in results:
                 for box in r.boxes:
                     cls_id = int(box.cls[0])
@@ -112,6 +129,7 @@ def process_video(video_path):
 
     # --- Cleanup ---
     cap.release()
+    out.release() # Release the video writer
     cv2.destroyAllWindows()
 
     # NEW: Update the final summary to include all three counts
