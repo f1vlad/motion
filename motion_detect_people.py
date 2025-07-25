@@ -41,7 +41,19 @@ def process_video(video_path):
     print(f"[INFO] Detections will be saved to: {log_filename}")
 
     LOGGER.setLevel("ERROR")
-    model = YOLO('yolov8n.pt')
+
+
+    # Models
+    # * yolov8s.pt (small)
+    # * yolov8m.pt (medium)
+    # * yolov8l.pt (large)
+    # * yolov8x.pt (extra-large)
+
+
+    model = YOLO('yolov8n.pt') # Original lightweight model
+    # model = YOLO('yolov8l.pt')
+
+
     cap = cv2.VideoCapture(video_path)
     if not cap.isOpened():
         print(f"[ERROR] Failed to open video: {video_path}")
