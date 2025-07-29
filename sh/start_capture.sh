@@ -1,9 +1,7 @@
 #!/bin/bash
+set -x
 
-source ./sh/config.sh
-
-CAPTURE_DIR="capture"
-PID_FILE="$CAPTURE_DIR/ffmpeg.pid"
+source "$(dirname "$0")"/config.sh
 
 mkdir -p $CAPTURE_DIR
 

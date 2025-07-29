@@ -6,13 +6,13 @@ PID_FILE := $(CAPTURE_DIR)/ffmpeg.pid
 
 start-capture:
 	@echo "Starting video capture..."
-	@./sh/start_capture.sh
+	@/bin/bash -c "$(CURDIR)/sh/start_capture.sh"
 
 stop-capture:
-	@./sh/stop_capture.sh
+	@/bin/bash -c "$(CURDIR)/sh/stop_capture.sh"
 
 status-capture:
-	@./sh/check_capture_status.sh
+	@/bin/bash -c "$(CURDIR)/sh/check_capture_status.sh"
 
 clean-pid:
-	@./sh/clean_pid.sh	
+	@/bin/bash -c "$(CURDIR)/sh/clean_pid.sh"	

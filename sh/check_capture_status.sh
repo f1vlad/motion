@@ -1,7 +1,7 @@
 #!/bin/bash
+set -x
 
-CAPTURE_DIR="capture"
-PID_FILE="$CAPTURE_DIR/ffmpeg.pid"
+source "$(dirname "$0")"/config.sh
 
 if [ -f "$PID_FILE" ]; then
     PID=$(cat "$PID_FILE" | tr -d '\n')
@@ -13,4 +13,3 @@ if [ -f "$PID_FILE" ]; then
 else
     echo "Capture is not running."
 fi
-

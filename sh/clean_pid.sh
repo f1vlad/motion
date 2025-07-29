@@ -1,7 +1,6 @@
 #!/bin/bash
 
-CAPTURE_DIR="capture"
-PID_FILE="$CAPTURE_DIR/ffmpeg.pid"
+source "$(dirname "$0")"/config.sh
 
 if [ -f "$PID_FILE" ]; then
     rm "$PID_FILE"
