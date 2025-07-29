@@ -20,9 +20,9 @@ ffplay -rtsp_transport tcp rtsp://localhost:8554/stream
 
 
 #### Capture and chunk
-make start-capture
-make stop-capture
-make status-capture
-make clean-pid
-// ps aux | grep ffmpeg | grep -v grep
-// killall ffmpeg
+make start-capture  
+make stop-capture  
+make status-capture  
+make clean-pid  
+// ps aux | grep ffmpeg | grep -v grep  
+// killall ffmpeg  
