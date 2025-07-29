@@ -1,9 +1,5 @@
 .PHONY: start-capture stop-capture status-capture clean-pid
 
-# Directory to store video captures and the PID file
-CAPTURE_DIR := capture
-PID_FILE := $(CAPTURE_DIR)/ffmpeg.pid
-
 start-capture:
 	@echo "Starting video capture..."
 	@/bin/bash -c "$(CURDIR)/sh/start_capture.sh"
