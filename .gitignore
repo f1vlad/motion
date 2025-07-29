@@ -1,0 +1,6 @@
+.DS_Store
+__pycache__/
+capture
+videos
+yolov8l.pt
+yolov8n.pt

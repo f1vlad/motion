@@ -16,3 +16,13 @@ docker run -it --rm -p 8554:8554 -v $(pwd)/rtsp-dev-server/mediamtx.yml:/mediamt
 
 ###### Player
 ffplay -rtsp_transport tcp rtsp://localhost:8554/stream
+
+
+
+#### Capture and chunk
+make start-capture
+make stop-capture
+make status-capture
+make clean-pid
+// ps aux | grep ffmpeg | grep -v grep
+// killall ffmpeg
