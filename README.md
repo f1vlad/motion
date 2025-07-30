@@ -21,9 +21,9 @@ make list-all-rtsp-streams
 
 #### Storage Server
 cd ./storage-server  
-docker compose up -d
-ssh surveillanceuser@localhost -p 2222
-sftp -P 2222 surveillanceuser:surveillanceuser@localhost
+docker compose up -d  
+ssh surveillanceuser@localhost -p 2222  
+sftp -P 2222 surveillanceuser:surveillanceuser@localhost  
 
 
 
