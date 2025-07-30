@@ -14,7 +14,7 @@ make start-dev-server
 
 
 ###### Player
-ffplay -rtsp_transport tcp rtsp://localhost:8554/stream
+ffplay -rtsp_transport tcp rtsp://localhost:8554/stream_1
 
 
 

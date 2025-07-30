@@ -15,6 +15,6 @@ clean-pid:
 
 start-rtsp-server:
 	@echo "Randomizing RTSP source..."
-	@/bin/bash -c "$(CURDIR)/sh/randomize_rtsp_source.sh"
+	@/bin/bash -c "$(CURDIR)/sh/randomize_rtsp_source.sh $(STREAMS)"
 	@echo "Starting RTSP dev server..."
 	@docker run -it --rm -p 8554:8554 -v $(CURDIR)/rtsp-dev-server/mediamtx.yml:/mediamtx.yml bluenviron/mediamtx:latest-ffmpeg	
