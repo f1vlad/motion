@@ -1,10 +1,10 @@
 paths:
 
   stream_1:
-    runOnDemand: ffmpeg -re -stream_loop -1 -f lavfi -i mandelbrot=s=640x480:r=30 -c:v libx264 -preset ultrafast -tune zerolatency -f rtsp rtsp://localhost:8554/stream_1
+    runOnDemand: ffmpeg -re -stream_loop -1 -f lavfi -i smptehdbars=s=640x480:r=30 -c:v libx264 -preset ultrafast -tune zerolatency -f rtsp rtsp://localhost:8554/stream_1
 
   stream_2:
-    runOnDemand: ffmpeg -re -stream_loop -1 -f lavfi -i testsrc=s=640x480:r=30 -c:v libx264 -preset ultrafast -tune zerolatency -f rtsp rtsp://localhost:8554/stream_2
+    runOnDemand: ffmpeg -re -stream_loop -1 -f lavfi -i life=s=640x480:r=30 -c:v libx264 -preset ultrafast -tune zerolatency -f rtsp rtsp://localhost:8554/stream_2
 
   stream_3:
     runOnDemand: ffmpeg -re -stream_loop -1 -f lavfi -i smptebars=s=640x480:r=30 -c:v libx264 -preset ultrafast -tune zerolatency -f rtsp rtsp://localhost:8554/stream_3

@@ -13,7 +13,9 @@ make start-rtsp-server STREAMS=3
 
 
 ###### Player
-ffplay -rtsp_transport tcp rtsp://localhost:8554/stream_1
+make play-all-rtsp-streams
+make stop-all-rtsp-streams
+make list-all-rtsp-streams
 
 
 
