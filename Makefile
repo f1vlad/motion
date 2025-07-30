@@ -1,4 +1,4 @@
-.PHONY: start-capture stop-capture status-capture clean-pid start-dev-server play-all-streams stop-all-streams list-all-rtsp-streams
+.PHONY: start-capture stop-capture status-capture clean-pid start-dev-server play-all-streams stop-all-streams list-all-rtsp-streams generate-web-interface serve-web-interface stop-web-interface
 
 start-capture:
 	@echo "Starting video capture..."
@@ -29,4 +29,17 @@ stop-all-rtsp-streams:
 
 list-all-rtsp-streams:
 	@echo "Listing all RTSP streams..."
-	@/bin/bash -c "$(CURDIR)/sh/list_all_rtsp_streams.sh"	
+	@/bin/bash -c "$(CURDIR)/sh/list_all_rtsp_streams.sh"
+
+generate-web-interface:
+	@echo "Generating web interface..."
+	@/bin/bash -c "$(CURDIR)/sh/generate_web_interface.sh"
+
+serve-web-interface:
+	@echo "Starting web server on port 8000..."
+	@python3 -m http.server 8000 > /dev/null 2>&1 &
+	@echo "Web server started. Open http://localhost:8000 in your browser."
+
+stop-web-interface:
+	@echo "Stopping web server..."
+	@/bin/bash -c "$(CURDIR)/sh/stop_web_interface.sh"	
