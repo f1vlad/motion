@@ -19,6 +19,12 @@ make list-all-rtsp-streams
 
 
 
+###### Web Player
+make generate-web-interface  
+make serve-web-interface  
+make stop-web-interface
+
+
 #### Storage Server
 cd ./storage-server  
 docker compose up -d  
