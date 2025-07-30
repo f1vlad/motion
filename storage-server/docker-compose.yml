@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  surveillance-server:
+    build:
+      context: . # Looks for Dockerfile in the current directory
+      dockerfile: Dockerfile # Specifies the Dockerfile to use
+    container_name: surveillance-storage
+    ports:
+      - "2222:22" # Host port 2222 maps to container's SSH port 22
+    volumes:
+      - surveillance_data:/var/lib/surveillance_footage # Named volume for persistent data
+    restart: always # Automatically restart the container if it stops
+
+volumes:
+  surveillance_data: # Define the named volume
+    driver: local
