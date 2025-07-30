@@ -9,8 +9,7 @@ python3 motion.py "2025-07-24 08-32-32.mov" ignore-stationary=false
 
 #### RTSP Dev Server
 ###### Server
-make start-dev-server
-
+make start-rtsp-server STREAMS=3
 
 
 ###### Player
