@@ -40,8 +40,8 @@ HTML_CONTENT+="    <div class=\"video-container\">\n"
 for STREAM in $STREAM_NAMES; do
     HTML_CONTENT+="        <div class=\"video-item\">\n"
     HTML_CONTENT+="            <h2>${STREAM}</h2>\n"
-    HTML_CONTENT+="            <video id=\"video-${STREAM}\" class=\"video-js vjs-default-skin\" controls preload=\"auto\"\n"
-    HTML_CONTENT+="                data-setup='{} '>\n"
+    HTML_CONTENT+="            <video id=\"video-${STREAM}\" class=\"video-js vjs-default-skin\" controls preload=\"auto\" autoplay muted
+"    HTML_CONTENT+="                data-setup='{} '>"
     HTML_CONTENT+="                <source src="http://localhost:8888/${STREAM}/index.m3u8" type="application/x-mpegURL">"
     HTML_CONTENT+="            </video>\n"
     HTML_CONTENT+="        </div>\n"
