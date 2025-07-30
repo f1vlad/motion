@@ -13,9 +13,9 @@ make start-rtsp-server STREAMS=3
 
 
 ###### Player
-make play-all-rtsp-streams
-make stop-all-rtsp-streams
-make list-all-rtsp-streams
+make play-all-rtsp-streams  
+make stop-all-rtsp-streams  
+make list-all-rtsp-streams  
 
 
 
