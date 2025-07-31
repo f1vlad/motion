@@ -1,53 +1,3 @@
-#!/bin/bash
-
-MEDIAMTX_YML="rtsp-dev-server/mediamtx.yml"
-OUTPUT_HTML="index.html"
-
-if [ ! -f "$MEDIAMTX_YML" ]; then
-    echo "Error: $MEDIAMTX_YML not found. Please start the dev server first." >&2
-    exit 1
-fi
-
-# Extract stream names from mediamtx.yml
-STREAM_NAMES=$(grep -oE '^[[:space:]]*stream_[0-9]+:' "$MEDIAMTX_YML" | sed 's/^[[:space:]]*//; s/:$//')
-
-if [ -z "$STREAM_NAMES" ]; then
-    echo "No streams found in $MEDIAMTX_YML. Cannot generate web interface." >&2
-    exit 0
-fi
-
-# Construct the video player HTML for each stream
-VIDEO_PLAYERS=""
-for STREAM in $STREAM_NAMES; do
-    VIDEO_PLAYERS+="            <div class=\"cctv-panel\">\n"
-    VIDEO_PLAYERS+="                <video id=\"video-${STREAM}\" class=\"video-js vjs-default-skin\" controls preload=\"auto\" autoplay muted playsinline "
-    VIDEO_PLAYERS+="                    data-setup='{} '>\n"
-    VIDEO_PLAYERS+="                    <source src=\"http://localhost:8888/${STREAM}/index.m3u8\" type=\"application/x-mpegURL\">\n"
-    VIDEO_PLAYERS+="                </video>\n"
-    VIDEO_PLAYERS+="                <div class=\"panel-overlay\"><span class=\"timestamp\">${STREAM}</span></div>\n"
-    VIDEO_PLAYERS+="            </div>\n"
-done
-
-# Video.js and HLS.js script block
-VIDEOJS_SCRIPT=""
-VIDEOJS_SCRIPT+="    <script src=\"https://vjs.zencdn.net/7.11.4/video.min.js\"></script>\n"
-VIDEOJS_SCRIPT+="    <script src=\"https://unpkg.com/@videojs/http-streaming@2.13.0/dist/videojs-http-streaming.min.js\"></script>\n"
-VIDEOJS_SCRIPT+="    <script>\n"
-VIDEOJS_SCRIPT+="        document.addEventListener('DOMContentLoaded', function() {\n"
-VIDEOJS_SCRIPT+="            const videoElements = document.querySelectorAll('video');\n"
-VIDEOJS_SCRIPT+="            videoElements.forEach(video => {\n"
-VIDEOJS_SCRIPT+="                const player = videojs(video.id);\n"
-VIDEOJS_SCRIPT+="                player.ready(function() {\n"
-VIDEOJS_SCRIPT+="                    this.play().catch(error => {\n"
-VIDEOJS_SCRIPT+="                        console.log('Autoplay prevented:', error);\n"
-VIDEOJS_SCRIPT+="                    });\n"
-VIDEOJS_SCRIPT+="                });\n"
-VIDEOJS_SCRIPT+="            });\n"
-VIDEOJS_SCRIPT+="        });\n"
-VIDEOJS_SCRIPT+="    <\/script>\n"
-
-# Use a "here document" to write the entire HTML file
-cat <<EOF > "$OUTPUT_HTML"
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -132,7 +82,6 @@ cat <<EOF > "$OUTPUT_HTML"
         </aside>
 
         <main class="fui-main-content">
-            ${VIDEO_PLAYERS}
         </main>
 
         <footer class="fui-footer-bar">
@@ -189,9 +138,5 @@ cat <<EOF > "$OUTPUT_HTML"
             </div>
         </footer>
     </div>
-    ${VIDEOJS_SCRIPT}
 </body>
 </html>
-EOF
-
-echo "Generated $OUTPUT_HTML with new design."
