@@ -25,7 +25,7 @@ for STREAM in $STREAM_NAMES; do
     VIDEO_PLAYERS+="                    <source src=\"http://localhost:8888/${STREAM}/index.m3u8\" type=\"application/x-mpegURL\">\n"
     VIDEO_PLAYERS+="                </video>\n"
     VIDEO_PLAYERS+="                <div class=\"panel-overlay\"><span class=\"timestamp\">${STREAM}</span></div>\n"
-    VIDEO_PLAYERS+="            </div>\n"
+    VIDEO_PLAYERS+="            </div>"
 done
 
 # Video.js and HLS.js script block
