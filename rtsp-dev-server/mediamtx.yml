@@ -1,11 +1,11 @@
 paths:
 
   stream_1:
-    runOnDemand: ffmpeg -re -stream_loop -1 -f lavfi -i smptehdbars=s=640x480:r=30 -c:v libx264 -preset ultrafast -tune zerolatency -pix_fmt yuv420p -profile:v baseline -f rtsp rtsp://localhost:8554/stream_1
+    runOnDemand: ffmpeg -re -stream_loop -1 -f lavfi -i testsrc2=s=640x480:r=30 -c:v libx264 -preset ultrafast -tune zerolatency -pix_fmt yuv420p -profile:v baseline -f rtsp rtsp://localhost:8554/stream_1
 
   stream_2:
-    runOnDemand: ffmpeg -re -stream_loop -1 -f lavfi -i cellauto=s=640x480:r=30:rule=30 -c:v libx264 -preset ultrafast -tune zerolatency -pix_fmt yuv420p -profile:v baseline -f rtsp rtsp://localhost:8554/stream_2
+    runOnDemand: ffmpeg -re -stream_loop -1 -f lavfi -i smptebars=s=640x480:r=30 -c:v libx264 -preset ultrafast -tune zerolatency -pix_fmt yuv420p -profile:v baseline -f rtsp rtsp://localhost:8554/stream_2
 
   stream_3:
-    runOnDemand: ffmpeg -re -stream_loop -1 -f lavfi -i smptebars=s=640x480:r=30 -c:v libx264 -preset ultrafast -tune zerolatency -pix_fmt yuv420p -profile:v baseline -f rtsp rtsp://localhost:8554/stream_3
+    runOnDemand: ffmpeg -re -stream_loop -1 -f lavfi -i color=c=blue:s=640x480:r=30 -c:v libx264 -preset ultrafast -tune zerolatency -pix_fmt yuv420p -profile:v baseline -f rtsp rtsp://localhost:8554/stream_3
 
