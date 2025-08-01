@@ -30,25 +30,16 @@ body {
     width: 100vw;
 }
 
-.fui-container {
-    display: grid;
-    height: 100%;
-    grid-template-columns: 260px 1fr;
-    grid-template-rows: 45px 1fr 200px;
-    grid-template-areas:
-        "header header"
-        "left-panel main-content"
-        "footer-bar footer-bar";
-    gap: 10px;
-    padding: 10px;
+.panel-module {
+    aspect-ratio: 16 / 9;
+    background-color: #000;
+    position: relative;
+    clip-path: polygon(15px 0%, 100% 0%, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0% 100%, 0% 15px);
+    overflow: hidden;
+    height: 220px;
+    display: block;
 }
 
-.panel-module {
-    border: var(--border-style);
-    background-color: var(--color-panel);
-    padding: var(--panel-padding);
-    position: relative;
-}
 .panel-header {
     display: flex;
     justify-content: space-between;
@@ -90,8 +81,7 @@ body {
     flex-direction: column;
     gap: 10px;
 }
-.calendar-module { flex-shrink: 0; }
-.calendar { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; text-align: center; }
+
 .day-header { color: var(--color-text-dim); }
 .day { padding: 2px 0; }
 .active-day { background-color: var(--color-primary-glow); color: var(--color-background); box-shadow: 0 0 8px var(--color-primary-glow); }
@@ -120,45 +110,36 @@ body {
 .knob { width: 30px; height: 30px; border-radius: 50%; background: radial-gradient(circle at 50% 40%, #fff, #555); border: 2px solid var(--color-text-dim); position: relative; }
 .knob::after { content: ''; position: absolute; width: 3px; height: 8px; background-color: #000; top: 2px; left: 50%; transform: translateX(-50%); }
 
+
 /* SECTION 2: Main Content (CCTV) */
 .fui-main-content {
-    grid-area: main-content;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: 1fr 1fr;
+    display: flex;
     gap: 10px;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    overflow: auto;
+    padding: 10px;
 }
+
 .cctv-panel {
     aspect-ratio: 16 / 9;
     background-color: #000;
     position: relative;
-    clip-path: polygon(15px 0%, 100% 0%, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0% 100%, 0% 15px);
+    clip-path: polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0% 100%, 0 12px);
     overflow: hidden;
+    width: 500px;
 }
-.cctv-panel::before {
-    content: '';
-    position: absolute;
-    inset: -2px;
-    background: var(--color-primary-glow);
-    z-index: 1;
-    clip-path: polygon(15px 0%, 100% 0%, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0% 100%, 0% 15px);
-    filter: blur(12px);
-    opacity: 0.7;
-}
-.cctv-panel::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border: 1px solid var(--color-primary-glow);
-    clip-path: polygon(15px 0%, 100% 0%, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0% 100%, 0% 15px);
-    z-index: 2;
-}
+
 .panel-overlay {
     position: absolute;
     inset: 10px;
     z-index: 3;
-    border: 1px solid rgba(0, 240, 255, 0.2);
     pointer-events: none;
+    height: 30px;
+    right: 0;
+    width: 100px;
+    left: initial;
+    top: 0;
 }
 .timestamp {
     position: absolute;
@@ -178,6 +159,7 @@ body {
 }
 .footer-left { width: 260px; display: flex; gap: 10px; }
 .notes-module { flex-grow: 1; display: flex; flex-direction: column; }
+.header-deco { overflow: auto;}
 .terminal-log { font-family: var(--font-mono); font-size: 14px; flex-grow: 1; overflow-y: auto; }
 .rec-light { color: var(--color-red-alert); text-shadow: 0 0 8px var(--color-red-alert); animation: blink 1.5s infinite; }
 @keyframes blink { 50% { opacity: 0.5; } }
