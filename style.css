@@ -44,7 +44,6 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 10px;
     font-size: 10px;
     text-transform: uppercase;
     color: var(--color-text-dim);
@@ -198,4 +197,16 @@ body {
   .fui-left-panel,.fui-footer-bar { flex-direction: column; }
   .footer-left { width: auto; flex-direction: row; }
   .fui-main-content { grid-template-columns: 1fr; }
+}
+
+.vjs-text-track-display {
+    display: none;
+}
+
+.video-js {
+    overflow: auto;
+}
+
+.vjs-tech {
+    width: 100%;
 }

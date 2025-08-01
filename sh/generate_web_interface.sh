@@ -20,11 +20,10 @@ fi
 VIDEO_PLAYERS=""
 for STREAM in $STREAM_NAMES; do
     VIDEO_PLAYERS+="            <div class=\"cctv-panel\">"
-    VIDEO_PLAYERS+="                <video id=\"video-${STREAM}\" class=\"video-js vjs-default-skin\" controls preload=\"auto\" autoplay muted playsinline "
-    VIDEO_PLAYERS+="                    data-setup='{} '>"
+    VIDEO_PLAYERS+="                <video id=\"video-${STREAM}\" class=\"video-js vjs-default-skin\" controls preload=\"auto\" autoplay muted playsinline data-setup='{} '>"
     VIDEO_PLAYERS+="                    <source src=\"http://localhost:8888/${STREAM}/index.m3u8\" type=\"application/x-mpegURL\">"
     VIDEO_PLAYERS+="                </video>"
-    VIDEO_PLAYERS+="                <div class=\"panel-overlay\"><span class=\"timestamp\">${STREAM}</span></div>"
+    VIDEO_PLAYERS+="                <div class=\"panel-overlay\"><span class=\"timestamp\">${STREAM}</span><button class=\"fullscreen-button\">&#x26F6;</button></div>"
     VIDEO_PLAYERS+="            </div>"
 done
 
@@ -34,17 +33,28 @@ VIDEOJS_SCRIPT+="    <script src=\"https://vjs.zencdn.net/7.11.4/video.min.js\">
 VIDEOJS_SCRIPT+="    <script src=\"https://unpkg.com/@videojs/http-streaming@2.13.0/dist/videojs-http-streaming.min.js\"></script>"
 VIDEOJS_SCRIPT+="    <script>"
 VIDEOJS_SCRIPT+="        document.addEventListener('DOMContentLoaded', function() {"
-VIDEOJS_SCRIPT+="            const videoElements = document.querySelectorAll('video');"
-VIDEOJS_SCRIPT+="            videoElements.forEach(video => {"
-VIDEOJS_SCRIPT+="                const player = videojs(video.id);"
-VIDEOJS_SCRIPT+="                player.ready(function() {"
-VIDEOJS_SCRIPT+="                    this.play().catch(error => {"
-VIDEOJS_SCRIPT+="                        console.log('Autoplay prevented:', error);"
-VIDEOJS_SCRIPT+="                    });"
-VIDEOJS_SCRIPT+="                });"
-VIDEOJS_SCRIPT+="            });"
-VIDEOJS_SCRIPT+="        });"
-VIDEOJS_SCRIPT+="    <\/script>"
+    VIDEOJS_SCRIPT+="            const videoElements = document.querySelectorAll('video');"
+    VIDEOJS_SCRIPT+="            videoElements.forEach(video => {"
+    VIDEOJS_SCRIPT+="                const player = videojs(video.id);"
+    VIDEOJS_SCRIPT+="                player.ready(function() {"
+    VIDEOJS_SCRIPT+="                    this.play().catch(error => {"
+    VIDEOJS_SCRIPT+="                        console.log('Autoplay prevented:', error);"
+    VIDEOJS_SCRIPT+="                    });"
+    VIDEOJS_SCRIPT+="                });"
+    VIDEOJS_SCRIPT+="                // Custom fullscreen button logic"
+    VIDEOJS_SCRIPT+="                const fullscreenButton = video.closest('.cctv-panel').querySelector('.fullscreen-button');"
+    VIDEOJS_SCRIPT+="                if (fullscreenButton) {"
+    VIDEOJS_SCRIPT+="                    fullscreenButton.addEventListener('click', function() {"
+    VIDEOJS_SCRIPT+="                        if (player.isFullscreen()) {"
+    VIDEOJS_SCRIPT+="                            player.exitFullscreen();"
+    VIDEOJS_SCRIPT+="                        } else {"
+    VIDEOJS_SCRIPT+="                            player.requestFullscreen();"
+    VIDEOJS_SCRIPT+="                        }"
+    VIDEOJS_SCRIPT+="                    });"
+    VIDEOJS_SCRIPT+="                }"
+    VIDEOJS_SCRIPT+="            });"
+    VIDEOJS_SCRIPT+="        });"
+    VIDEOJS_SCRIPT+="    <\/script>"
 
 # Use a "here document" to write the entire HTML file
 cat <<EOF > "$OUTPUT_HTML"
@@ -53,7 +63,7 @@ cat <<EOF > "$OUTPUT_HTML"
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Surveillance UI</title>
+    <title>Futuristic Surveillance UI</title>
     <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
