@@ -16,12 +16,22 @@ if [ -z "$STREAM_NAMES" ]; then
     exit 0
 fi
 
+# Get local IP address. Note: This is a best-effort attempt and might need adjustment
+# depending on your network configuration (e.g., for Wi-Fi vs. Ethernet).
+IP_ADDRESS=$(ifconfig | grep 'inet ' | grep -v '127.0.0.1' | awk '{print $2}' | head -n 1)
+
+if [ -z "$IP_ADDRESS" ]; then
+    echo "Warning: Could not automatically determine local IP address." >&2
+    echo "Falling back to 'localhost'. Streams may not be visible on other devices." >&2
+    IP_ADDRESS="localhost"
+fi
+
 # Construct the video player HTML for each stream
 VIDEO_PLAYERS=""
 for STREAM in $STREAM_NAMES; do
     VIDEO_PLAYERS+="            <div class=\"cctv-panel\">"
     VIDEO_PLAYERS+="                <video id=\"video-${STREAM}\" class=\"video-js vjs-default-skin\" controls preload=\"auto\" autoplay muted playsinline data-setup='{} '>"
-    VIDEO_PLAYERS+="                    <source src=\"http://localhost:8888/${STREAM}/index.m3u8\" type=\"application/x-mpegURL\">"
+    VIDEO_PLAYERS+="                    <source src=\"http://${IP_ADDRESS}:8888/${STREAM}/index.m3u8\" type=\"application/x-mpegURL\">"
     VIDEO_PLAYERS+="                </video>"
     VIDEO_PLAYERS+="                <div class=\"panel-overlay\"><span class=\"timestamp\">${STREAM}</span><button class=\"fullscreen-button\">&#x26F6;</button></div>"
     VIDEO_PLAYERS+="            </div>"
